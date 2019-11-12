@@ -10,8 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private Timer timer;
     private int i;
     private UIHandler uiHandler;
+    private SimpleAdapter adapter;
+    private LinkedList<HashMap<String,String>> data;
+    private String[] from = {"lapItem"};
+    private int[] to = {R.id.lapItem};
+    private int lapCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +46,17 @@ public class MainActivity extends AppCompatActivity {
         uiHandler = new UIHandler();
         timer = new Timer();
         timer.schedule(new MyTask(), 0, 10);
+        initListView();
     }
 
-    //時間到執行的動作
+    //初始化
+    private void initListView() {
+        data = new LinkedList<>(); //物件實體化
+        adapter = new SimpleAdapter(this,data,R.layout.item,from, to);
+        lapList.setAdapter(adapter);
+    }
+
+    //按下start開始計時，stop暫停
     private class MyTask extends TimerTask {
         @Override
         public void run() {
@@ -72,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //專換時間單位
+    //轉換時間單位
     private String toClockString() {
         int ts = i / 100; //總秒數
         int hs = i % 100;
@@ -93,12 +110,19 @@ public class MainActivity extends AppCompatActivity {
 
     //圈數計時功能
     private void doLap() {
-
+        HashMap<String,String> itemData = new HashMap<>();
+        lapCount++;
+        itemData.put(from[0], "Lap" + lapCount + ":\t\t\t" + clock.getText().toString());
+        data.add(0, itemData);
+        adapter.notifyDataSetChanged();
     }
 
-    //清空重來
+    //歸零重來，清空畫面
     private void doReset() {
         i = 0;
+        lapCount = 0;
+        data.clear();
+        adapter.notifyDataSetChanged();
         uiHandler.sendEmptyMessage(0);
     }
 
@@ -107,7 +131,5 @@ public class MainActivity extends AppCompatActivity {
         isRunning = !isRunning; //第一次true，第二次false，以此類推
         btnLeft.setText(isRunning?"Lap":"Reset");
         btnRight.setText(isRunning?"Stop":"Start");
-        //開始計時
-        //timer.schedule(new MyTask(), 0, 10);
     }
 }
