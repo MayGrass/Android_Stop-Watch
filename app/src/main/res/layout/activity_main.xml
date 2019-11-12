@@ -6,16 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#BC000000">
 
     <TextView
         android:id="@+id/clock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="10:10:10.32"
+        android:text="0:0:0.00"
         android:textSize="48sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textColor="#FFF"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="clickLeft"
+            android:text="Reset"
             />
         <Button
             android:id="@+id/btnRight"
@@ -35,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="clickRight"
+            android:text="Start"
             />
     </LinearLayout>
     <ListView
